@@ -31,8 +31,10 @@
   }
   
   button {
-    width: 100%;
+    /* width: 100%; */
     padding: 10px;
+    padding-left: 15%;
+    padding-right: 15%;
     background-color: #357edd;
     color: white;
     border: none;
