@@ -1,29 +1,50 @@
 import React from 'react'
-import { useState } from 'react'
+import { useState,useEffect,useContext } from 'react'
 
 import { cardio, dental, dermatology, neurology, orthopedic } from '../assets/assets';
 import { AppointmentContext } from '../context/AppointmentContext';
-import { useContext } from 'react';
 import MyAppointments from './MyAppointments';
+import { useNavigate } from 'react-router-dom';
+   
+  
 
 const Appointments = () => {
-
+    
+    const navigate=useNavigate();
     const [specialization, setSpecialization] = useState('');
     const [doctor, setDoctor] = useState('');
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [date, setDate] = useState('');
+     useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/pages/login');
+      return ;
+    }
+  }, [navigate]);
 
     const [clk,setClk] = useState(false)
 
     const { appointments, setAppointments } = useContext(AppointmentContext);
-
+     useEffect(() => {
+    const stored = localStorage.getItem('appointments');
+    if (stored) {
+      setAppointments(JSON.parse(stored));  // Load saved appointments into state
+    }
+  }, []);
     
 
     const submitHandler = (e) => {
         e.preventDefault();
         const newData = { specialization, doctor, name, email, date };
-        setAppointments(prev => [...prev, newData]);
+        setAppointments(prev => [...prev, newData]); // save the contest
+            
+                // save in local storage
+        const existing=JSON.parse(localStorage.getItem('appointments')) || [];
+        const update=[...existing,newData];
+        localStorage.setItem('appointments', JSON.stringify(update));
+
         setSpecialization('');
         setDate('')
         setName('')
@@ -84,12 +105,7 @@ const Appointments = () => {
             </form>
         </div>
 
-        <div className={clk ? 'block' : 'hidden'}>
-            <h1 className='text-5xl text-center font-bold mb-10 mt-10'>Booked Appointments</h1>
-            <div className='flex justify-center items-center h-screen'>
-                <MyAppointments />
-            </div>
-        </div>
+        
     </div>
   )
 }

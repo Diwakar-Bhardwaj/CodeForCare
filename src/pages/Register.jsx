@@ -1,11 +1,13 @@
 
 import React, { useState } from 'react';
 import { registerUser } from '../api';
-import { NavLink } from 'react-router-dom';
+import { NavLink ,useNavigate} from 'react-router-dom';
+
 
 const Register = () => {
   const [form, setForm] = useState({ name: '', email: '', password: '' });
   const [message, setMessage] = useState('');
+  const navigate=useNavigate();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -18,6 +20,9 @@ const Register = () => {
       setMessage(res.data.message);
       console.log('Registration successful:', res.data);
       setForm({ name: '', email: '', password: '' });
+      setTimeout(()=>{
+        navigate('/pages/login');
+      },1200);
     } catch (err) {
       console.error('Registration error:', err.response?.data?.message || err);
       setMessage(err.response?.data?.message || 'Registration failed');
@@ -48,6 +53,17 @@ const Register = () => {
             value={form.email}
             onChange={handleChange}
             required
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <input
+            type="tel"
+            name="mob"
+            placeholder="Contact Number"
+            value={form.mob}
+            onChange={handleChange}
+            required
+            pattern="\d{10}"
+           title="Please enter exactly 10 digits"
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <input
